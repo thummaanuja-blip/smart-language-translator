@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Language Translator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #777;
+            font-size: 16px;
+        }
+
+        .language-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .language-box {
+            flex: 1;
+        }
+
+        .language-box label {
+            display: block;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+        }
+
+        select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .text-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .text-box {
+            flex: 1;
+        }
+
+        .text-box label {
+            display: block;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 220px;
+            resize: vertical;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 17px;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #667eea;
+        }
+
+        .output {
+            background: #f5f7ff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 13px 35px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .translate-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .translate-btn:hover {
+            background: #5568d8;
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .clear-btn:hover {
+            background: #ccc;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #cc0000;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .language-section,
+            .text-section {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>🌐 Smart Language Translator</h1>
+            <p>Translate between English, Telugu and Hindi</p>
+        </div>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="language-section">
+
+                <div class="language-box">
+                    <label for="source_language">Source Language</label>
+
+                    <select name="source_language" id="source_language">
+
+                        <option value="English"
+                            {% if source_language == "English" %}selected{% endif %}>
+                            English
+                        </option>
+
+                        <option value="Telugu"
+                            {% if source_language == "Telugu" %}selected{% endif %}>
+                            Telugu
+                        </option>
+
+                        <option value="Hindi"
+                            {% if source_language == "Hindi" %}selected{% endif %}>
+                            Hindi
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="language-box">
+                    <label for="target_language">Target Language</label>
+
+                    <select name="target_language" id="target_language">
+
+                        <option value="English"
+                            {% if target_language == "English" %}selected{% endif %}>
+                            English
+                        </option>
+
+                        <option value="Telugu"
+                            {% if target_language == "Telugu" %}selected{% endif %}>
+                            Telugu
+                        </option>
+
+                        <option value="Hindi"
+                            {% if target_language == "Hindi" %}selected{% endif %}>
+                            Hindi
+                        </option>
+
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div class="text-section">
+
+                <div class="text-box">
+
+                    <label for="source_text">
+                        Enter Text
+                    </label>
+
+                    <textarea
+                        name="source_text"
+                        id="source_text"
+                        placeholder="Enter text here..."
+                    >{{ source_text }}</textarea>
+
+                </div>
+
+
+                <div class="text-box">
+
+                    <label for="translated_text">
+                        Translation
+                    </label>
+
+                    <textarea
+                        id="translated_text"
+                        class="output"
+                        readonly
+                        placeholder="Translation will appear here..."
+                    >{{ translated_text }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="translate-btn">
+                    Translate
+                </button>
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    onclick="clearText()">
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div class="footer">
+            <p>Smart Language Translator | English • Telugu • Hindi</p>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        function clearText() {
+
+            document.getElementById("source_text").value = "";
+
+            document.getElementById("translated_text").value = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
